@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title></title>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" /> </script>
+
+</head>
+<body ng-app>
+<canvas id="controlCanvas" height="400" width="600"></canvas><br>
+My expected interest: <input type="text" name="expectInterest" id="my-expectInterest">
+The bigest return:    <input type="text" name="bigestReturn" id="my-bigestReturn">
+<input id="my-click" type="submit" value="Click">
+
+<script type="text/javascript">
+var expectInterest;
+var bigestReturn;
+var selectedFund = {fund1: [25, 28, 7], fund2: [25, 52, 11], fund3: [23, 40, 7]};
+var canvas = document.getElementById("controlCanvas");  
+var context = canvas.getContext("2d");
+var canvasWidth = $(canvas).attr("width");
+var canvasHeight = $(canvas).attr("Height") - 15;
+var canvasWidthFloat = (canvasWidth-60) / 4;
+var canvasHeightFloat = (canvasHeight-20) / 4;
+$(function(){
+
+	init();
+
+	$("#my-click").click(function(){
+		expectInterest = $("#my-expectInterest").val();
+		bigestReturn = $("#my-bigestReturn").val();
+		var zone = Math.ceil(bigestReturn/10) + (Math.ceil(expectInterest/25)-1)*4;
+
+		for(fund in selectedFund) {
+			context.beginPath();
+			if(selectedFund[fund][2] === zone) {
+				context.arc(30 + (selectedFund[fund][0]/10) * canvasWidthFloat, canvasHeight - (selectedFund[fund][1]/25) * canvasHeightFloat, 5, 0,2*Math.PI);
+				context.fillStyle = 'yellow';
+	      		context.fill();
+	      		context.stroke();
+			}
+			/*context.arc(30 + (selectedFund[fund][0]/10) * canvasWidthFloat, canvasHeight - (selectedFund[fund][1]/25) * canvasHeightFloat, 5, 0,2*Math.PI);
+			context.fillStyle = 'white';
+      		context.fill();
+      		context.stroke();*/
+		}
+	});
+
+})
+
+function init() 
+{
+
+	//var expectInterest = 52;
+	//var bigestReturn = 25;
+	
+
+	//绘制y轴平行线
+	for(var x = 1; x < 5; x++) {
+		context.moveTo(30 + x * canvasWidthFloat, 0); 
+		context.lineTo(30 + x * canvasWidthFloat, canvasHeight);
+	}
+	//绘制x轴平行线
+	for(var y = 1; y < 5; y++) {
+		context.moveTo(30, canvasHeight - y * canvasHeightFloat); 
+		context.lineTo(canvasWidth, canvasHeight - y * canvasHeightFloat); 
+	}
+
+	context.strokeStyle = "#ddd"; 
+	context.stroke(); 
+	context.beginPath(); 
+	//画横坐标 
+	context.moveTo(30, canvasHeight); 
+	context.lineTo(canvasWidth, canvasHeight); 
+	context.moveTo(canvasWidth - 15, canvasHeight - 10); 
+	context.lineTo(canvasWidth, canvasHeight); 
+	context.lineTo(canvasWidth - 15, canvasHeight + 10); 
+	//画纵坐标 
+	context.moveTo(30, canvasHeight); 
+	context.lineTo(30, 0); 
+	context.moveTo(20, 15); 
+	context.lineTo(30, 0); 
+	context.lineTo(40, 15);
+
+	context.strokeStyle = "#000"; 
+	context.stroke(); 
+
+	for(var y = 0; y < 5; y++) {
+		var yAxis = (25 * y) + "%";
+		context.fillText(yAxis, 0, canvasHeight - y * canvasHeightFloat);
+	}
+	
+	for(var x = 0; x < 5; x++) {
+		var xAxis = (10 * x) + "%";
+		context.fillText(xAxis, 30 + x * canvasWidthFloat, canvasHeight + 15);
+	}
+
+	context.moveTo(30, canvasHeight);
+	context.lineTo(canvasWidth, canvasHeight/2 + 30);
+	context.stroke(); 
+
+	for(fund in selectedFund) {
+		context.beginPath();
+		context.arc(30 + (selectedFund[fund][0]/10) * canvasWidthFloat, canvasHeight - (selectedFund[fund][1]/25) * canvasHeightFloat, 5, 0,2*Math.PI);
+		context.stroke();
+	}
+
+}
+
+
+</script>
+</body>
+</html>
